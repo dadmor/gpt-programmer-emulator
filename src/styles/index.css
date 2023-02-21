@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+/* 
+body {
+  @apply w-full;
+} */
+
+#__next {
+  @apply flex flex-col min-h-screen text-gray-600 leading-normal text-base tracking-normal;
+}
+
+@tailwind utilities;
+
+/* 
+  Tailwind Gutenberg implementation 
+  (c)2022 dadmor@gmail.com 
+*/
+@layer components {
+  .gutenberg, .wp-block-column {
+    @apply gap-10 flex flex-col
+  }
+  .gutenberg .wp-block-column{
+    @apply flex-1
+  }
+  .gutenberg .wp-block-columns, 
+  .gutenberg .wp-block-gallery {
+    @apply flex flex-row gap-10;
+  }
+  .gutenberg .size-full > img,
+  .gutenberg .wp-block-embed__wrapper iframe{
+    @apply w-full
+  }
+  /* https://hidde.blog/embedded-video-in-responsive-lay-outs/ */x
+  /* .gutenberg .wp-block-embed__wrapper > div{
+    @apply relative
+  } */
+  /* .gutenberg .wp-block-embed__wrapper iframe{
+    @apply absolute top-0 left-0 right-0 bottom-0 h-full
+  } */
+  .gutenberg h2{ 
+    @apply text-2xl py-5
+  }
+  /* colors */
+  .gutenberg .has-cyan-bluish-gray-background-color{
+    @apply bg-slate-200
+  }
+  .gutenberg .has-ast-global-color-6-background-color{
+    @apply bg-slate-100
+  }
+  /* blocks: blockquote */
+  .gutenberg .wp-block-pullquote > blockquote {
+    @apply bg-slate-200 p-5 flex flex-col-reverse gap-5
+  }
+  .gutenberg .wp-block-pullquote > blockquote > p {
+    @apply text-xs
+  }
+
+
+ 
+}
+
+@font-face {
+  font-family: "HelveticaNeue";
+  src: url("../public/fonts/helvetica-neue/HelveticaNeueLT-Roman.woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  descent-override: 0%;
+}
+
+html {
+  font-family: 'HelveticaNeue';
+  color: theme('colors.gray.900');
+}
+
+/*
+ Fonts licence:
+ Lato:
+ https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+ HelveticaNeue:
+ http://fonts3.com/fonts/h/HelveticaNeueLTPro-Ex.html
+*/
+
+
