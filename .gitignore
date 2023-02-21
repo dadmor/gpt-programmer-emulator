@@ -1,9 +1,6 @@
 public
 out
 node_modules
-pages
-src/components/themes
-src/components/plugins
 package.json
 .next
 .env
