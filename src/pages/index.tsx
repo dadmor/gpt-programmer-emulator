@@ -1,142 +1,78 @@
+import { UserCard, ReposList, SelectedRepo, GptTaggingButton } from "components/partials";
+import { getRepos } from "helpers/githubRest";
 import Link from "next/link";
-import { useState } from "react";
+
+import { useStore } from "helpers/store";
 
 // @ts-ignore
 const Index: React.FC = ({ data }) => {
   /*
       View render
     */
-  const [repos, setRepos] = useState([]);
-  const [repo, setRepo] = useState([]);
-  const [content, setContent]: any = useState({});
-  const [selectedRepo, setSelectedRepo] = useState(0);
-  console.log(data);
-  // @ts-ignore
-  const getRepos = (accessToken) => {
-    fetch("https://api.github.com/user/repos", {
-      headers: {
-        Authorization: `token ${accessToken}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setRepos(data);
-      })
-      .catch((error) => console.error(error));
-  };
-  // @ts-ignore
-  const getRepo = (accessToken, name) => {
-    fetch(`https://api.github.com/repos/${data.login}/${name}/contents`, {
-      headers: {
-        Authorization: `token ${accessToken}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setRepo(data);
-      })
-      .catch((error) => console.error(error));
-  };
-  // @ts-ignore
-  const getContent = (accessToken, name, path) => {
-    console.log(accessToken, name, path);
-    fetch(
-      `https://api.github.com/repos/${data.login}/${name}/contents/${path}`,
-      {
-        headers: {
-          Authorization: `token ${accessToken}`,
-          Accept: "application/vnd.github.v3+json",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setContent(data);
-      })
-      .catch((error) => console.error(error));
-  };
+  // const [repos, setRepos]: any = useState([]);
+  // const [repo, setRepo]: any = useState([]);
+  // const [content, setContent]: any = useState({});
+  // const [selectedRepo, setSelectedRepo]: any = useState(null);
+  // const [selectedContent, setSelectedContent] = useState({});
+  // const [gptTags, setGptTags] = useState("");
+
+  const setData = useStore((state: any) => state.setAttr);
+  const repos = useStore((state: any) => state.gitHub.repos);
+  const selectedRepo = useStore((state: any) => state.gitHub.selectedRepo);
+  const content = useStore((state: any) => state.gitHub.content);
+  const gptTags = useStore((state: any) => state.gpt.gptTags);
+
 
   return (
-    <div className="p-3 flex gap-3 max-h-screen">
+    <div className="p-3 flex gap-3 h-screen">
       {data.login ? (
         <>
-          <div className="flex flex-col gap-2 w-1/6">
-            <div className="flex gap-3 border">
-              <img width="100" height="auto" src={data.avatar_url} />
-              <div className="pt-1 pr-3">
-                <p>
-                  Reverse GitHub repos{" "}
-                  <span className="text-stone-400 border bg-emerald-100">
-                    GPT
-                  </span>{" "}
-                  analyzer
-                </p>
-
-                <p>
-                  Hello: <b>{data.login}</b>
-                </p>
-              </div>
-            </div>
-            {}
+          <div className="flex flex-col gap-2 w-1/6"> 
+            <UserCard data={data} />
             <div>Select Repo to analyzer</div>
             <button
-              onClick={() => getRepos(data.token)}
+              onClick={() => getRepos(data, setData)}
               className="border rounded p-1.5 bg-blue-100 hover:bg-blue-50 "
             >
               Loading reposx
             </button>
-            <div className="border text-sm">
-              {repos.map((el: any, i) => {
-                return (
-                  <div
-                    onClick={() => {
-                      getRepo(data.token, el.name);
-                      setSelectedRepo(i);
-                    }}
-                    key={i}
-                    className="p-3 border-b hover:bg-stone-200 cursor-pointer"
-                  >
-                    {el?.name}
-                  </div>
-                );
-              })}
-            </div>
+            <ReposList data={data} />
           </div>
 
-          <div className="border text-sm w-1/6 flex flex-col">
-            <p className="p-3 border-b bg-emerald-600 text-white">
-              Selected repo
-            </p>
-
-            {repo.map((el: any, i) => {
-              return (
-                <div
-                  onClick={() =>
-                    // @ts-ignore
-                    getContent(data.token, repos[selectedRepo]?.name, el.path)
-                  }
-                  key={i}
-                  className="p-3 border-b hover:bg-stone-200 cursor-pointer truncate"
-                >
-                  {el?.name}
-                </div>
-              );
-            })}
+          <div className="border w-1/6 overflow-y-scroll">
+            <SelectedRepo data={data}/>
           </div>
-          <div className="w-4/6 h-full border">
-            <div className="p-3 text-xs bg-stone-700 text-emerald-300 font-mono h-full overflow-hidden">
+          <div className="w-4/6 h-full flex flex-col">
+            <div className="p-3 bg-stone-900 text-stone-400">{content?.path ? content?.path : "path not loaded"}</div>
+            <div className="p-3 text-xs bg-stone-700 text-emerald-300 font-mono h-[40vh] overflow-y-scroll">
               {/* // @ts-ignore */}
               {content?.content ? atob(content?.content) : "content not loaded"}
             </div>
-            <div className="bg-stone-200 p-3">
+            <div className="bg-stone-200 p-3 flex gap-1.5">
+              
+              <GptTaggingButton/>
               <button className="text-sm border text-emerald-700 border-emerald-600 rounded py-1.5 px-3 hover:bg-emerald-700 hover:bg-opacity-20">
-                GPT Tagging
+                GPT Methods
               </button>
+              <button className="text-sm border text-emerald-700 border-emerald-600 rounded py-1.5 px-3 hover:bg-emerald-700 hover:bg-opacity-20">
+                GPT Short
+              </button>
+              <button className="text-sm border text-emerald-700 border-emerald-600 rounded py-1.5 px-3 hover:bg-emerald-700 hover:bg-opacity-20">
+                GPT Components
+              </button>
+             
+            </div>
+            {gptTags && (
+                <div className="bg-stone-200 flex justify-between border border-stone-400 py-1.5 px-3 rounded mt-1.5 bg-stone-50">
+                  <div>{gptTags}</div>
+                  <div className="text-white rounded bg-blue-400 px-3 h-min curesor-pointer">+&nbsp;update</div>
+                </div>
+              )}
+            <div className="flex-1 border mt-3">
+              <div className="py-1.5 px-3 bg-stone-100 border-b">
+                Insert issue for <b>{repos.length && selectedRepo ? repos[selectedRepo]?.name : ''}</b>
+              </div>
+              <textarea className="w-full h-max"></textarea>
             </div>
           </div>
         </>
