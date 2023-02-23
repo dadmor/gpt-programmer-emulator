@@ -50,7 +50,7 @@ const Index: React.FC = ({ data }) => {
             </div>
             <div className="bg-stone-200 p-3 flex gap-1.5">
               
-              <GptTaggingButton/>
+              <GptTaggingButton data={data}/>
               <button className="text-sm border text-emerald-700 border-emerald-600 rounded py-1.5 px-3 hover:bg-emerald-700 hover:bg-opacity-20">
                 GPT Methods
               </button>
@@ -113,7 +113,7 @@ export async function getServerSideProps({ query }) {
   });
   const user = await secondStep.json();
   return {
-    props: { data: { ...user, token: token.access_token } },
+    props: { data: { ...user, token: token.access_token, gptKey: process.env.OPENAI_API_KEY } },
   };
 }
 

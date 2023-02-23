@@ -28,7 +28,10 @@ export default async function (req, res) {
 }
 
 function generatePrompt(code) {
+  console.log('---------------------------------')
+ 
   const capitalizedcode =
     code[0].toUpperCase() + code.slice(1).toLowerCase();
+
   return `${capitalizedcode}`;
 }
